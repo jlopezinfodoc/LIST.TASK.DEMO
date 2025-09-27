@@ -1,6 +1,13 @@
+using Microsoft.EntityFrameworkCore;
+using LIST.TASK.DEMO.Infraestructura.Persistencia;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+// Configure Entity Framework
+builder.Services.AddDbContext<TaskDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
