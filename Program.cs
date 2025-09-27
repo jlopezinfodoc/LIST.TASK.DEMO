@@ -5,6 +5,7 @@ using LIST.TASK.DEMO.Infraestructura.Repository.Interfaces;
 using LIST.TASK.DEMO.Servicios;
 using LIST.TASK.DEMO.Servicios.Interfaces;
 using LIST.TASK.DEMO.Servicios.Mappings;
+using LIST.TASK.DEMO.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +32,10 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+
+// Add Global Exception Handling Middleware (debe ser uno de los primeros middlewares)
+app.UseGlobalExceptionHandling();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
