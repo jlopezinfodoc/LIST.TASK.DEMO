@@ -24,6 +24,26 @@ builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 // Configure Service layer
 builder.Services.AddScoped<ITaskService, TaskService>();
 
+// Configure CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularApp", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200", "https://localhost:4200") // Angular dev server
+              .AllowAnyMethod()
+              .AllowAnyHeader()
+              .AllowCredentials();
+    });
+    
+    // Política más permisiva para desarrollo
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -35,6 +55,16 @@ var app = builder.Build();
 
 // Add Global Exception Handling Middleware (debe ser uno de los primeros middlewares)
 app.UseGlobalExceptionHandling();
+
+// Configure CORS (debe estar antes de UseAuthorization)
+if (app.Environment.IsDevelopment())
+{
+    app.UseCors("AllowAll"); // Más permisivo para desarrollo
+}
+else
+{
+    app.UseCors("AllowAngularApp"); // Más restrictivo para producción
+}
 
 if (app.Environment.IsDevelopment())
 {
